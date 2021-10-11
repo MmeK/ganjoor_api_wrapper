@@ -1,0 +1,6 @@
+/config/
+/tests/vcr_cassettes/
+/logs/
+/.pytest_cache/
+/.vscode/
+/apis/
