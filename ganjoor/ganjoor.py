@@ -4,7 +4,7 @@ import requests
 from config.settings import ganjoor_base_url
 from ganjoor.exceptions import GanjoorException
 
-from .models.poet import Poet
+from .models import Poet
 
 
 # TODO: Fix Logging

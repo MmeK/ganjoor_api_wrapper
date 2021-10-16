@@ -26,7 +26,7 @@ class TestPoet:
     @vcr.use_cassette('tests/vcr_cassettes/poet_details_url.yml')
     def test_poet_details_url(self, poet_keys):
         """Tests an API call to get a Poet's details using its url"""
-        poet_instance = Poet(url="/hafezasdasdasdasd")
+        poet_instance = Poet(url="/hafez")
         response = poet_instance.details()
         assert isinstance(response, dict)
         assert response['fullUrl'] == '/hafez', "The ID should be in the response"
