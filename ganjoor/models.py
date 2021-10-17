@@ -211,7 +211,7 @@ class Poem:
 
     @classmethod
     def find(cls, id, category_info=True, category_poems=True, rhymes=True,
-             recitations=True, images=True, songs=True, comments=False,
+             recitations=True, images=True, songs=True, comments=True,
              verse_details=True, navigation=True) -> Poem:
         params = dict.copy(locals())
         params.pop('id')
@@ -438,7 +438,7 @@ class Comment:
     _author_url: str
     _comment_date: str
     _html_comment: str
-    _published_status: str
+    _publish_status: str
     _in_reply_to_id: int
     _user_id: int
     _replies: List[Comment]
