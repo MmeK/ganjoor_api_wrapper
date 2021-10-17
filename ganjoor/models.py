@@ -3,6 +3,7 @@
 
 from inflection import underscore
 import requests
+from requests.api import get
 from config.settings import ganjoor_base_url
 from ganjoor.exceptions import GanjoorException
 
@@ -77,21 +78,21 @@ class Category:
         for key in category_args.keys():
             snake_key = underscore(key)
             setattr(self, snake_key, category_args[key])
-        if self.children is not None:
+        if self.children:
             children = []
             for child in self.children:
                 children.append(Category(child))
             self.children = children
-        if self.poems is not None:
+        if self.poems:
             poems = []
             for poem in self.poems:
                 poems.append(Poem(poem))
             self.poems = poems
-        if self.next is not None:
+        if self.next:
             self.next = Category(self.next)
-        if self.previous is not None:
+        if self.previous:
             self.previous = Category(self.previous)
-        if self.ancestors is not None:
+        if self.ancestors:
             ancestors = []
             for ancestor in self.ancestors:
                 ancestors.append(Category(ancestor))
@@ -128,6 +129,7 @@ class Category:
 
 
 class Poem:
+
     # Metre, Cat, Nav(next,prev), Verses, Recitations, Images, Songs, Comments
     __urls = {
         "find": "/api/ganjoor/poem/{id}",
@@ -138,17 +140,22 @@ class Poem:
         for key in poem_args.keys():
             snake_key = underscore(key)
             setattr(self, snake_key, poem_args[key])
-        if self.ganjoor_metre is not None:
+        if self.ganjoor_metre:
             self.ganjoor_metre = Metre(self.ganjoor_metre)
-        if self.category is not None:
+        if self.category:
             self.poet = Poet(self.category['poet'])
             self.category = Category(self.category['cat'])
-        if self.next is not None:
+        if self.next:
             self.__next = self.next
             del self.next
-        if self.previous is not None:
+        if self.previous:
             self.__previous = self.previous
             del self.__previous
+        if self.images:
+            images = []
+            for image in self.images:
+                images.append(PoemImage(image))
+            self.images = images
 
     @classmethod
     def find(cls, id, category_info=True, category_poems=True, rhymes=True,
@@ -177,9 +184,77 @@ class Poem:
     def get_next_poem(self):
         return Poem.find(self.__next['id'])
 
+    def get_normal_images(self):
+        normal_images = []
+        for poem_image in self.images:
+            normal_images.append(poem_image.get_normal_image())
+        return normal_images
+
+    def get_thumbnails(self):
+        return [poem_image.thumbnail_image_url for poem_image in self.images]
+
 
 class Metre:
     def __init__(self, metre_args) -> None:
         for key in metre_args.keys():
             snake_key = underscore(key)
-            setattr(self, snake_key, metre_args[key])
+            setattr(self, "_"+snake_key, metre_args[key])
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def url_slug(self):
+        return self._url_slug
+
+    @property
+    def rhythm(self):
+        return self._rhythm
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def description(self):
+        return self._description
+
+    @property
+    def verse_count(self):
+        return self._verse_count
+
+
+class PoemImage:
+    def __init__(self, poem_image_args) -> None:
+        self.image_order = 0
+        self.poem_related_image_type = 0
+        self.thumbnail_image_url = ""
+        self.target_page_url = ""
+        self.alt_text = ""
+        for key in poem_image_args.keys():
+            snake_key = underscore(key)
+            setattr(self, "_"+snake_key, poem_image_args[key])
+
+    def get_normal_image(self):
+        return self.thumbnail_image_url.replace('thumb', 'normal')
+
+    @property
+    def image_order(self):
+        return self._image_order
+
+    @property
+    def poem_related_image_type(self):
+        return self._poem_related_image_type
+
+    @property
+    def thumbnail_image_url(self):
+        return self._thumbnail_image_url
+
+    @property
+    def target_page_url(self):
+        return self._target_page_url
+
+    @property
+    def alt_text(self):
+        return self._alt_text
