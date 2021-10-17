@@ -227,11 +227,6 @@ class Metre:
 
 class PoemImage:
     def __init__(self, poem_image_args) -> None:
-        self.image_order = 0
-        self.poem_related_image_type = 0
-        self.thumbnail_image_url = ""
-        self.target_page_url = ""
-        self.alt_text = ""
         for key in poem_image_args.keys():
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, poem_image_args[key])
