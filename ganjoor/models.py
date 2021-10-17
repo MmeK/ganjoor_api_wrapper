@@ -3,7 +3,6 @@
 
 from inflection import underscore
 import requests
-from requests.api import get
 from config.settings import ganjoor_base_url
 from ganjoor.exceptions import GanjoorException
 
@@ -18,7 +17,7 @@ class Poet:
     def __init__(self, poet_args) -> None:
         for key in poet_args.keys():
             snake_key = underscore(key)
-            setattr(self, snake_key, poet_args[key])
+            setattr(self, "_"+snake_key, poet_args[key])
 
     @classmethod
     def all(cls) -> list():
@@ -63,8 +62,41 @@ class Poet:
             raise GanjoorException(
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
-    def get_avatar(self, format="png"):
+    @property
+    def avatar(self, format="png"):
         return ganjoor_base_url+self.image_url
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def description(self):
+        return self._description
+
+    @property
+    def full_url(self):
+        return self._full_url
+
+    @property
+    def root_cat_id(self):
+        return self._root_cat_id
+
+    @property
+    def nickname(self):
+        return self._nickname
+
+    @property
+    def published(self):
+        return self._published
+
+    @property
+    def category(self):
+        return self._cat
 
 
 class Category:
@@ -172,25 +204,26 @@ class Poem:
             raise GanjoorException(
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
-    @classmethod
-    def get_user_bookmarked_poems(cls, auth_token):
-        response = requests.get(
-            "https://ganjgah.ir/api/ganjoor/bookmark",
-            headers={'Authorization': 'bearer '+auth_token})
+    # @classmethod
+    # def get_user_bookmarked_poems(cls, auth_token):
+    #     response = requests.get(
+    #         "https://ganjgah.ir/api/ganjoor/bookmark",
+    #         headers={'Authorization': 'bearer '+auth_token})
 
-    def get_previous_poem(self):
+    @property
+    def previous_poem(self):
         return Poem.find(self.__previous['id'])
 
-    def get_next_poem(self):
+    @property
+    def next_poem(self):
         return Poem.find(self.__next['id'])
 
-    def get_normal_images(self):
-        normal_images = []
-        for poem_image in self.images:
-            normal_images.append(poem_image.get_normal_image())
-        return normal_images
+    @property
+    def normal_images(self):
+        return [poem_image.normal_image_url for poem_image in self.images]
 
-    def get_thumbnails(self):
+    @property
+    def thumbnails(self):
         return [poem_image.thumbnail_image_url for poem_image in self.images]
 
 
@@ -231,7 +264,8 @@ class PoemImage:
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, poem_image_args[key])
 
-    def get_normal_image(self):
+    @property
+    def normal_image_url(self):
         return self.thumbnail_image_url.replace('thumb', 'normal')
 
     @property
