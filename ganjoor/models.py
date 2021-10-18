@@ -451,6 +451,10 @@ class Comment:
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, comment_args[key])
 
+    @property
+    def replies(self):
+        return [Comment(comment) for comment in self._replies]
+
 
 @dataclass
 class Recitation:
