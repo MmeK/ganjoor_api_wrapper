@@ -140,6 +140,74 @@ class Song:
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, song_args[key])
 
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def poem_id(self) -> int:
+        return self._poem_id
+
+    @property
+    def track_type(self) -> int:
+        return self._track_type
+
+    @property
+    def artist_name(self) -> str:
+        return self._artist_name
+
+    @property
+    def artist_url(self) -> str:
+        return self._artist_url
+
+    @property
+    def album_name(self) -> str:
+        return self._album_name
+
+    @property
+    def album_url(self) -> str:
+        return self._album_url
+
+    @property
+    def track_name(self) -> str:
+        return self._track_name
+
+    @property
+    def track_url(self) -> str:
+        return self._track_url
+
+    @property
+    def description(self) -> str:
+        return self._description
+
+    @property
+    def broken_link(self) -> bool:
+        return self._broken_link
+
+    @property
+    def golha_track_id(self) -> int:
+        return self._golha_track_id
+
+    @property
+    def approved(self) -> int:
+        return self._approved
+
+    @property
+    def rejected(self) -> int:
+        return self._rejected
+
+    @property
+    def rejected_cause(self) -> str:
+        return self._rejected_cause
+
+    @property
+    def suggested_by_id(self) -> str:
+        return self._suggested_by_id
+
+    @property
+    def suggested_by_nickname(self) -> str:
+        return self._suggested_by_nickname
+
 
 @dataclass
 class Comment:
@@ -162,8 +230,52 @@ class Comment:
             setattr(self, "_"+snake_key, comment_args[key])
 
     @property
-    def replies(self):
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def replies(self) -> List[Comment]:
         return [Comment(comment) for comment in self._replies]
+
+    @property
+    def author_name(self) -> str:
+        return self._author_name
+
+    @property
+    def author_url(self) -> str:
+        return self._author_url
+
+    @property
+    def comment_date(self) -> str:
+        return self._comment_date
+
+    @property
+    def html_comment(self) -> str:
+        return self._html_comment
+
+    @property
+    def publish_status(self) -> str:
+        return self._publish_status
+
+    @property
+    def in_reply_to_id(self) -> int:
+        return self._in_reply_to_id
+
+    @property
+    def user_id(self) -> int:
+        return self._user_id
+
+    @property
+    def my_comment(self) -> bool:
+        return self._my_comment
+
+    @property
+    def couplet_index(self) -> int:
+        return self._couplet_index
+
+    @property
+    def couplet_summary(self) -> str:
+        return self._couplet_summary
 
 
 @dataclass
@@ -192,6 +304,78 @@ class Recitation:
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, recitation_args[key])
 
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def poem_id(self) -> int:
+        return self._poem_id
+
+    @property
+    def poem_full_title(self) -> str:
+        return self._poem_full_title
+
+    @property
+    def poem_full_url(self) -> str:
+        return self._poem_full_url
+
+    @property
+    def audio_title(self) -> str:
+        return self._audio_title
+
+    @property
+    def audio_artist(self) -> str:
+        return self._audio_artist
+
+    @property
+    def audio_artist_url(self) -> str:
+        return self._audio_artist_url
+
+    @property
+    def audio_src(self) -> str:
+        return self._audio_src
+
+    @property
+    def audio_src_url(self) -> str:
+        return self._audio_src_url
+
+    @property
+    def legacy_audio_guid(self) -> str:
+        return self._legacy_audio_guid
+
+    @property
+    def mp3_file_check_sum(self) -> str:
+        return self._mp3_file_check_sum
+
+    @property
+    def mp3_size_in_bytes(self) -> int:
+        return self._mp3_size_in_bytes
+
+    @property
+    def publish_date(self) -> str:
+        return self._publish_date
+
+    @property
+    def file_last_updated(self) -> str:
+        return self._file_last_updated
+
+    @property
+    def mp3_url(self) -> str:
+        return self._mp3_url
+
+    @property
+    def xml_text(self) -> str:
+        return self._xml_text
+
+    @property
+    def plain_text(self) -> str:
+        return self._plain_text
+
+    @property
+    def html_text(self) -> str:
+        return self._html_text
+
 
 @dataclass
 class IncompletePoem:
@@ -206,3 +390,27 @@ class IncompletePoem:
         for key in incomplete_poem_args.keys():
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, incomplete_poem_args[key])
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def url_slug(self) -> str:
+        return self._url_slug
+
+    @property
+    def excerpt(self) -> str:
+        return self._excerpt
+
+    @property
+    def rhythm(self) -> str:
+        return self._rhythm
+
+    @property
+    def rhyme_letters(self) -> str:
+        return self._rhyme_letters

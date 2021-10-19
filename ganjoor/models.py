@@ -246,7 +246,6 @@ class Poem:
     }
 
     def __init__(self, poem_args) -> None:
-        print("hi")
         for key in poem_args.keys():
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, poem_args[key])
