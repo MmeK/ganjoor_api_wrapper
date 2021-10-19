@@ -122,7 +122,7 @@ class Poet:
     _nickname: str
     _published: bool
     _image_url: str
-    _category: Category
+    _cat: Category = None
 
     __urls = {
         "all": "/api/ganjoor/poets",
@@ -158,21 +158,21 @@ class Poet:
             body_poet = response.json()['poet']
             body_cat = response.json()['cat']
             poet = Poet(body_poet)
-            poet._category = body_cat
+            poet._cat = body_cat
             return poet
         else:
             raise GanjoorException(
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     @classmethod
-    def findByUrl(cls, url):
+    def find_by_url(cls, url):
         path = ganjoor_base_url+cls.__urls['find_url']
         response = requests.get(path, params={'url': url})
         if response.status_code == 200:
             body_poet = response.json()['poet']
             body_cat = response.json()['cat']
             poet = Poet(body_poet)
-            poet._category = body_cat
+            poet._cat = body_cat
             return poet
         else:
             raise GanjoorException(
@@ -212,7 +212,7 @@ class Poet:
 
     @property
     def category(self) -> Category:
-        return Category(self._category)
+        return Category(self._cat)
 
 
 @dataclass
@@ -231,8 +231,8 @@ class Poem:
     _old_tag: str
     _old_tag_page_url: str
     _category: Category
-    _next_poem: IncompletePoem
-    _previous_poem: IncompletePoem
+    _next: IncompletePoem
+    _previous: IncompletePoem
     _verses: List[Verse]
     _recitations: List[Recitation]
     _images: List[PoemImage]
@@ -242,7 +242,8 @@ class Poem:
 
     __urls = {
         "find": "/api/ganjoor/poem/{id}",
-        "find_url": "/api/ganjoor/poem"
+        "find_url": "/api/ganjoor/poem",
+
     }
 
     def __init__(self, poem_args) -> None:
@@ -268,11 +269,25 @@ class Poem:
             raise GanjoorException(
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
-    # @classmethod
-    # def get_user_bookmarked_poems(cls, auth_token):
-    #     response = requests.get(
-    #         "https://ganjgah.ir/api/ganjoor/bookmark",
-    #         headers={'Authorization': 'bearer '+auth_token})
+    @classmethod
+    def find_by_url(cls, url, category_info=True, category_poems=True,
+                    rhymes=True, recitations=True, images=True, songs=True,
+                    comments=True, verse_details=True,
+                    navigation=True) -> Poem:
+        params = dict.copy(locals())
+        path = ganjoor_base_url+cls.__urls['find_url']
+        response = requests.get(path, params=params)
+        if response.status_code == 200:
+            body = response.json()
+            return Poem(body)
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+        # @classmethod
+        # def get_user_bookmarked_poems(cls, auth_token):
+        #     response = requests.get(
+        #         "https://ganjgah.ir/api/ganjoor/bookmark",
+        #         headers={'Authorization': 'bearer '+auth_token})
 
     @property
     def ganjoor_metre(self) -> Metre:
