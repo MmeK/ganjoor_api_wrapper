@@ -8,14 +8,36 @@ from dataclasses import dataclass
 import requests
 from config.settings import ganjoor_base_url
 from ganjoor.exceptions import GanjoorException
-import category
-import poet
-from poem_utils import (Verse, Comment, Couplet,
-                        Recitation, Metre, PoemImage, Song)
+from . import category
+from . import poet
+from .poem_utils import (Verse, Comment, Couplet,
+                         IncompletePoem, Recitation, Metre, PoemImage, Song)
 
 
 @dataclass
 class Poem:
+    _id: int
+    _title: str
+    _full_title: str
+    _url_slug: str
+    _full_url: str
+    _ganjoor_metre: Metre
+    _rhyme_letters: str
+    _plain_text: str
+    _html_text: str
+    _source_name: str
+    _source_url_slug: str
+    _old_tag: str
+    _old_tag_page_url: str
+    _category: category.Category
+    _next_poem: IncompletePoem
+    _previous_poem: IncompletePoem
+    _verses: List[Verse]
+    _recitations: List[Recitation]
+    _images: List[PoemImage]
+    _songs: List[Song]
+    _comments: List[Comment]
+    _poet: poet.Poet
 
     __urls = {
         "find": "/api/ganjoor/poem/{id}",
@@ -23,20 +45,13 @@ class Poem:
     }
 
     def __init__(self, poem_args) -> None:
+        print("hi")
         for key in poem_args.keys():
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, poem_args[key])
         if self._category:
             self._poet = poet.Poet(self.category['poet'])
             self._category = category.Category(self.category['cat'])
-
-        if self._next:
-            self.__next = self._next
-            del self._next
-
-        if self._previous:
-            self.__previous = self._previous
-            del self._previous
 
     @classmethod
     def find(cls, id, category_info=True, category_poems=True, rhymes=True,
@@ -58,7 +73,7 @@ class Poem:
     #     response = requests.get(
     #         "https://ganjgah.ir/api/ganjoor/bookmark",
     #         headers={'Authorization': 'bearer '+auth_token})
-    @property
+
     @property
     def ganjoor_metre(self) -> Metre:
         return Metre(self._ganjoor_metre)
@@ -94,12 +109,12 @@ class Poem:
         return [PoemImage(image) for image in self._images]
 
     @property
-    def previous_poem(self) -> Poem:
-        return Poem.find(self.__previous['id'])
+    def previous_poem(self) -> IncompletePoem:
+        return IncompletePoem(self._previous)
 
     @property
-    def next_poem(self) -> Poem:
-        return Poem.find(self.__next['id'])
+    def next_poem(self) -> IncompletePoem:
+        return IncompletePoem(self._next)
 
     @property
     def normal_image_urls(self) -> List[str]:
@@ -124,3 +139,51 @@ class Poem:
     def __str__(self):
         all_couplets = self.get_all_couplets()
         return '\n\n'.join([str(couplet) for couplet in all_couplets])
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def full_title(self) -> str:
+        return self._full_title
+
+    @property
+    def url_slug(self) -> str:
+        return self._url_slug
+
+    @property
+    def full_url(self) -> str:
+        return self._full_url
+
+    @property
+    def plain_text(self) -> str:
+        return self._plain_text
+
+    @property
+    def html_text(self) -> str:
+        return self._html_text
+
+    @property
+    def rhyme_letters(self) -> str:
+        return self._rhyme_letters
+
+    @property
+    def source_name(self) -> str:
+        return self._source_name
+
+    @property
+    def source_url_slug(self) -> str:
+        return self._source_url_slug
+
+    @property
+    def old_tag(self) -> str:
+        return self._old_tag
+
+    @property
+    def old_tag_page_url(self) -> str:
+        return self._old_tag_page_url

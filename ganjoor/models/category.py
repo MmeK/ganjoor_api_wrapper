@@ -6,8 +6,9 @@ from inflection import underscore
 import requests
 from config.settings import ganjoor_base_url
 from ganjoor.exceptions import GanjoorException
-import poem
-import poet
+from . import poem
+
+from . import poet
 
 
 class Category:
@@ -29,9 +30,10 @@ class Category:
         return []
 
     @property
-    def poems(self) -> List[poem.poem.Poem]:
+    def poems(self) -> List[poem.Poem]:
         if self._poems:
             return [poem.Poem(poem) for poem in self._poems]
+
         return []
 
     @property

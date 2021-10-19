@@ -191,3 +191,18 @@ class Recitation:
         for key in recitation_args.keys():
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, recitation_args[key])
+
+
+@dataclass
+class IncompletePoem:
+    _id: int
+    _title: str
+    _url_slug: str
+    _excerpt: str
+    _rhythm: str
+    _rhyme_letters: str
+
+    def __init__(self, incomplete_poem_args):
+        for key in incomplete_poem_args.keys():
+            snake_key = underscore(key)
+            setattr(self, "_"+snake_key, incomplete_poem_args[key])

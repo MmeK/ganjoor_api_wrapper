@@ -5,7 +5,7 @@ from inflection import underscore
 import requests
 from config.settings import ganjoor_base_url
 from ganjoor.exceptions import GanjoorException
-import category
+from . import category
 
 
 class Poet:
