@@ -248,7 +248,8 @@ class Poem:
         "songs": "/songs",
         "comments": "/comments",
         "hafez_faal": "/api/ganjoor/hafez/faal",
-        "random": "/api/ganjoor/poem/random"
+        "random": "/api/ganjoor/poem/random",
+        "similar": "/api/ganjoor/poems/similar"
     }
 
     def __init__(self, poem_args) -> None:
@@ -298,7 +299,7 @@ class Poem:
         #         headers={'Authorization': 'bearer '+auth_token})
 
     @classmethod
-    def hafez_faal(cls):
+    def hafez_faal(cls) -> Poem:
         path = ganjoor_base_url+cls.__urls['hafez_faal']
         response = requests.get(path)
         if response.status_code == 200:
@@ -309,12 +310,29 @@ class Poem:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     @classmethod
-    def random(cls, poet_id=None):
+    def random(cls, poet_id=None) -> Poem:
         path = ganjoor_base_url+cls.__urls['random']
         response = requests.get(path, params={'poetId': poet_id})
         if response.status_code == 200:
             body = response.json()
             return Poem(body)
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    @classmethod
+    def similar(cls, page_number=1, page_size=5, metre: str = None,
+                rhyme: str = None, poet_id=0) -> Poem:
+        """Gets a list of similar Poems. if no metre is supplied
+        the list will return texts not poems"""
+        path = ganjoor_base_url+cls.__urls['similar']
+        response = requests.get(path, params={
+                                'pageNumber': page_number, 'rhyme': rhyme,
+                                'metre': metre, 'pageSize': page_size,
+                                'poetId': poet_id})
+        if response.status_code == 200:
+            body = response.json()
+            return [Poem(poem) for poem in body]
         else:
             raise GanjoorException(
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
@@ -409,7 +427,9 @@ class Poem:
 
     @property
     def images(self) -> List[PoemImage]:
-        return [PoemImage(image) for image in self._images]
+        if self._images:
+            return [PoemImage(image) for image in self._images]
+        return []
 
     @property
     def previous_poem(self) -> IncompletePoem:
@@ -421,15 +441,21 @@ class Poem:
 
     @property
     def normal_image_urls(self) -> List[str]:
-        return [poem_image.normal_image_url for poem_image in self.images]
+        if self._images:
+            return [poem_image.normal_image_url for poem_image in self.images]
+        return []
 
     @property
     def thumbnail_urls(self) -> List[str]:
-        return [poem_image.thumbnail_image_url for poem_image in self.images]
+        if self._images:
+            return [poem_image.thumbnail_image_url for poem_image in self.images]
+        return []
 
     @property
     def verses(self) -> List[Verse]:
-        return [Verse(verse) for verse in self._verses]
+        if self._verses:
+            return [Verse(verse) for verse in self._verses]
+        return []
 
     @property
     def id(self) -> int:
