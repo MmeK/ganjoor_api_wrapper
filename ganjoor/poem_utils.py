@@ -7,7 +7,15 @@ from typing import List
 from inflection import underscore
 
 
+@dataclass
 class Metre:
+    _id: int
+    _url_slug: str
+    _rhythm: str
+    _name: str
+    _description: str
+    _verse_count: int
+
     def __init__(self, metre_args) -> None:
         for key in metre_args.keys():
             snake_key = underscore(key)
@@ -38,7 +46,14 @@ class Metre:
         return self._verse_count
 
 
+@dataclass
 class PoemImage:
+    _image_order: int
+    _poem_related_image_type: int
+    _thumbnail_image_url: str
+    _target_page_url: str
+    _alt_text: str
+
     def __init__(self, poem_image_args) -> None:
         for key in poem_image_args.keys():
             snake_key = underscore(key)
