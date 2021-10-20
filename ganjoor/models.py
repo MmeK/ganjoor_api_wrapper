@@ -247,7 +247,8 @@ class Poem:
         "images": "/images",
         "songs": "/songs",
         "comments": "/comments",
-        "hafez_faal": "/api/ganjoor/hafez/faal"
+        "hafez_faal": "/api/ganjoor/hafez/faal",
+        "random": "/api/ganjoor/poem/random"
     }
 
     def __init__(self, poem_args) -> None:
@@ -300,6 +301,17 @@ class Poem:
     def hafez_faal(cls):
         path = ganjoor_base_url+cls.__urls['hafez_faal']
         response = requests.get(path)
+        if response.status_code == 200:
+            body = response.json()
+            return Poem(body)
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    @classmethod
+    def random(cls, poet_id=None):
+        path = ganjoor_base_url+cls.__urls['random']
+        response = requests.get(path, params={'poetId': poet_id})
         if response.status_code == 200:
             body = response.json()
             return Poem(body)
