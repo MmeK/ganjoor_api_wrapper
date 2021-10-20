@@ -69,6 +69,14 @@ class TestPoem:
         assert [isinstance(comment, Comment)
                 for comment in poem.request_comments()]
 
+    @vcr.use_cassette('tests/vcr_cassettes/poem_hafez_faal.yml')
+    def test_hafez_faal(self):
+        """Tests an API call to get a faal from Hafez"""
+        faal = Poem.hafez_faal()
+        assert faal
+        assert isinstance(faal, Poem)
+        assert faal.full_url.split('/')[1] == 'hafez'
+
     def test_poem_str(self, poem: Poem, poem_string):
         assert str(poem.get_all_couplets()[0].verses[0]) == poem_string
 
