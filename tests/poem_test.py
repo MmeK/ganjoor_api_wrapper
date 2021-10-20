@@ -67,6 +67,15 @@ class TestPoem:
         assert set(poem_keys).issubset(poem_instance.__dict__.keys()
                                        ), "All keys should be in the response"
 
+    @vcr.use_cassette('tests/vcr_cassettes/poem_similar.yml')
+    def test_poem_similar(self, poem_keys):
+        """Tests Api call to get similar Poems"""
+        poem_list = Poem.similar()
+        assert [isinstance(poem, Poem) for poem in poem_list]
+        assert [set(poem_keys).issubset(poem.__dict__.keys()
+                                        ) for poem in poem_list],\
+            "All keys should be in the response"
+
     @vcr.use_cassette('tests/vcr_cassettes/poem_request_recitations.yml')
     def test_request_recitations(self, poem: Poem):
         assert [isinstance(recitation, Recitation)
