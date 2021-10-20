@@ -22,7 +22,7 @@ class TestPoet:
         assert set(poet_keys).issubset(poet_instance.__dict__.keys()
                                        ), "All keys should be in the response"
 
-    @vcr.use_cassette('tests/vcr_cassettes/poet_find_url.yml')
+    @vcr.use_cassette('tests/vcr_cassettes/poet_find_by_url.yml')
     def test_poet_find_by_url(self, poet_keys):
         """Tests an API call to get a Poet's details using its url"""
         poet_instance = Poet.find_by_url(url="/hafez")
