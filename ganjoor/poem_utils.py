@@ -232,6 +232,8 @@ class Comment:
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, comment_args[key])
 
+    # TODO: Add get recent comments
+
     @property
     def id(self) -> int:
         return self._id
