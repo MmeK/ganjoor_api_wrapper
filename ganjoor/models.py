@@ -249,7 +249,8 @@ class Poem:
         "comments": "/comments",
         "hafez_faal": "/api/ganjoor/hafez/faal",
         "random": "/api/ganjoor/poem/random",
-        "similar": "/api/ganjoor/poems/similar"
+        "similar": "/api/ganjoor/poems/similar",
+        "search": "/api/ganjoor/poems/search"
     }
 
     def __init__(self, poem_args) -> None:
@@ -324,11 +325,30 @@ class Poem:
     def similar(cls, page_number=1, page_size=5, metre: str = None,
                 rhyme: str = None, poet_id=0) -> Poem:
         """Gets a list of similar Poems. if no metre is supplied
-        the list will return texts not poems"""
+        the list will return texts not poems. Use poet_id=0 for all poets"""
         path = ganjoor_base_url+cls.__urls['similar']
         response = requests.get(path, params={
                                 'pageNumber': page_number, 'rhyme': rhyme,
                                 'metre': metre, 'pageSize': page_size,
+                                'poetId': poet_id})
+        if response.status_code == 200:
+            body = response.json()
+            return [Poem(poem) for poem in body]
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    @classmethod
+    def search(cls, page_number=1, page_size=5, term: str = "شیراز",
+               cat_id: int = 0, poet_id=0) -> Poem:
+        """Gets a list of Poems with the search term.
+        if term is empty or an empty string or whitespace
+        there will be an internal server error (500).
+        Use poet_id=0 for all poets and cat_id=0 for all categories"""
+        path = ganjoor_base_url+cls.__urls['search']
+        response = requests.get(path, params={
+                                'pageNumber': page_number, 'term': term,
+                                'cat_id': cat_id, 'pageSize': page_size,
                                 'poetId': poet_id})
         if response.status_code == 200:
             body = response.json()
