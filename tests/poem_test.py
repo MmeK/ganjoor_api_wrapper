@@ -49,6 +49,24 @@ class TestPoem:
         assert set(poem_keys).issubset(poem_instance.__dict__.keys()
                                        ), "All keys should be in the response"
 
+    @vcr.use_cassette('tests/vcr_cassettes/poem_random.yml')
+    def test_poem_random(self, poem_keys):
+        """Tests API call to get a random Poem"""
+        poem_instance = Poem.random()
+        assert isinstance(poem_instance, Poem)
+        assert set(poem_keys).issubset(poem_instance.__dict__.keys()
+                                       ), "All keys should be in the response"
+
+    @vcr.use_cassette('tests/vcr_cassettes/poem_random_saadi.yml')
+    def test_poem_random_from_saadi(self, poem_keys):
+        """Tests API call to get a random Poem from saadi"""
+        poem_instance = Poem.random(poet_id=7)
+        assert isinstance(poem_instance, Poem)
+        assert poem_instance.full_url.split(
+            '/')[1] == "saadi", "The ID should be correct"
+        assert set(poem_keys).issubset(poem_instance.__dict__.keys()
+                                       ), "All keys should be in the response"
+
     @vcr.use_cassette('tests/vcr_cassettes/poem_request_recitations.yml')
     def test_request_recitations(self, poem: Poem):
         assert [isinstance(recitation, Recitation)
