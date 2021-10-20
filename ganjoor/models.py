@@ -387,13 +387,18 @@ class Poem:
                         if verse.couplet_index == index])
 
     def get_all_couplets(self) -> List[Couplet]:
-        last_couplet = max([verse.couplet_index for verse in self.verses])
-        return [self.get_couplet(index)
-                for index in range(0, last_couplet+1)]
+        if self.verses:
+            last_couplet = max([verse.couplet_index for verse in self.verses])
+            return [self.get_couplet(index)
+                    for index in range(0, last_couplet+1)]
+        return []
 
     def __str__(self):
-        all_couplets = self.get_all_couplets()
-        return '\n\n'.join([str(couplet) for couplet in all_couplets])
+        if self.plain_text:
+            verses = self.plain_text.split('\n')
+            verses[1:-1:2] = [verse+"\n" for verse in verses[1:-1:2]]
+            return '\n'.join(verses)
+        return ''
 
     @property
     def ganjoor_metre(self) -> Metre:
