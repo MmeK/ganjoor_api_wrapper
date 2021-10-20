@@ -3,10 +3,25 @@
 from pytest import fixture
 from ganjoor import Poem
 import vcr
+from ganjoor import poem_utils
+
+from ganjoor.poem_utils import Comment, IncompletePoem, Metre, PoemImage, Recitation, Song, Verse
+
+TEST_POEM_ID = 2131
 
 
 class TestPoem:
     """Poem Test Class"""
+
+    @fixture
+    def poem_string(self):
+        return """صلاح کار کجا و من خراب کجا"""
+
+    @fixture
+    def poem(self):
+        with vcr.use_cassette('tests/vcr_cassettes/poem_find_complete.yml'):
+            return Poem.find(TEST_POEM_ID, complete=True)
+
     @fixture
     def poem_keys(self):
         return ['_id', '_title', '_full_title', '_url_slug', '_full_url',
@@ -33,3 +48,88 @@ class TestPoem:
         assert poem_instance.full_url == "/hafez/ghazal/sh2", "The url should be in the poem_instance"
         assert set(poem_keys).issubset(poem_instance.__dict__.keys()
                                        ), "All keys should be in the response"
+
+    def test_request_recitations(self, poem: Poem):
+        assert [isinstance(recitation, Recitation)
+                for recitation in poem.request_recitations()]
+
+    def test_poem_str(self, poem: Poem, poem_string):
+        assert str(poem.get_all_couplets()[0].verses[0]) == poem_string
+
+    def test_ganjoor_metre(self, poem: Poem):
+        assert isinstance(poem.ganjoor_metre, Metre)
+
+    def test_category(self, poem: Poem):
+        assert isinstance(poem.ganjoor_metre, Metre)
+
+    def test_poet(self, poem: Poem):
+        assert isinstance(poem.ganjoor_metre, Metre)
+
+    def test_recitations(self, poem: Poem):
+        assert poem.recitations
+        assert[isinstance(recitation, Recitation)
+               for recitation in poem.recitations]
+
+    def test_songs(self, poem: Poem):
+        assert poem.songs
+        assert [isinstance(song, Song) for song in poem.songs]
+
+    def test_comments(self, poem: Poem):
+        assert poem.comments
+        assert [isinstance(comment, Comment) for comment in poem.comments]
+
+    def test_images(self, poem: Poem):
+        assert [isinstance(image, PoemImage) for image in poem.images]
+
+    def test_previous_poem(self, poem: Poem):
+        assert isinstance(poem.previous_poem, IncompletePoem)
+
+    def test_next_poem(self, poem: Poem):
+        assert isinstance(poem.next_poem, IncompletePoem)
+
+    def test_normal_image_urls(self, poem):
+        assert [isinstance(poem_image.normal_image_url, str)
+                for poem_image in poem.images]
+
+    def test_thumbnail_urls(self, poem: Poem):
+        assert [isinstance(poem_image.thumbnail_image_url, str)
+                for poem_image in poem.images]
+
+    def test_verses(self, poem: Poem):
+        assert [isinstance(verse, Verse) for verse in poem.verses]
+
+    def test_id(self, poem: Poem):
+        assert isinstance(poem.id, int)
+
+    def test_title(self, poem: Poem):
+        assert isinstance(poem.title, str)
+
+    def test_full_title(self, poem: Poem):
+        assert isinstance(poem.full_title, str)
+
+    def test_url_slug(self, poem: Poem):
+        assert isinstance(poem.url_slug, str)
+
+    def test_full_url(self, poem: Poem):
+        assert isinstance(poem.full_url, str)
+
+    def test_plain_text(self, poem: Poem):
+        assert isinstance(poem.plain_text, str)
+
+    def test_html_text(self, poem: Poem):
+        assert isinstance(poem.html_text, str)
+
+    def test_rhyme_letters(self, poem: Poem):
+        assert isinstance(poem.rhyme_letters, str)
+
+    def test_source_name(self, poem: Poem):
+        assert isinstance(poem.source_name, str)
+
+    def test_source_url_slug(self, poem: Poem):
+        assert isinstance(poem.source_url_slug, str)
+
+    def test_old_tag(self, poem: Poem):
+        assert isinstance(poem.old_tag, type(None))
+
+    def test_old_tag_page_url(self, poem: Poem):
+        assert isinstance(poem.old_tag_page_url, type(None))
