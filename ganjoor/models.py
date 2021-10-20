@@ -22,7 +22,7 @@ class Category:
     _previous: Category
     _ancestors: List[Category]
     _children: List[Category]
-    _poems: List[Poem]
+    _poems: List[IncompletePoem]
 
     __urls = {
         "find": "/api/ganjoor/cat/{id}",
@@ -70,9 +70,9 @@ class Category:
         return []
 
     @property
-    def poems(self) -> List[Poem]:
+    def poems(self) -> List[IncompletePoem]:
         if self._poems:
-            return [poem.Poem(poem) for poem in self._poems]
+            return [IncompletePoem(poem) for poem in self._poems]
 
         return []
 
