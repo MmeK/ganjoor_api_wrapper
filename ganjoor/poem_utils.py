@@ -102,6 +102,9 @@ class Verse:
     def text(self) -> str:
         return self._text
 
+    def __str__(self) -> str:
+        return self.text
+
 
 @dataclass
 class Couplet:

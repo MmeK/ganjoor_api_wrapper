@@ -49,9 +49,25 @@ class TestPoem:
         assert set(poem_keys).issubset(poem_instance.__dict__.keys()
                                        ), "All keys should be in the response"
 
+    @vcr.use_cassette('tests/vcr_cassettes/poem_request_recitations.yml')
     def test_request_recitations(self, poem: Poem):
         assert [isinstance(recitation, Recitation)
                 for recitation in poem.request_recitations()]
+
+    @vcr.use_cassette('tests/vcr_cassettes/poem_request_images.yml')
+    def test_request_images(self, poem: Poem):
+        assert [isinstance(image, PoemImage)
+                for image in poem.request_images()]
+
+    @vcr.use_cassette('tests/vcr_cassettes/poem_request_songs.yml')
+    def test_request_songs(self, poem: Poem):
+        assert [isinstance(song, Song)
+                for song in poem.request_songs()]
+
+    @vcr.use_cassette('tests/vcr_cassettes/poem_request_comments.yml')
+    def test_request_comments(self, poem: Poem):
+        assert [isinstance(comment, Comment)
+                for comment in poem.request_comments()]
 
     def test_poem_str(self, poem: Poem, poem_string):
         assert str(poem.get_all_couplets()[0].verses[0]) == poem_string

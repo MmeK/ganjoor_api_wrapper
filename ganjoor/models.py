@@ -26,13 +26,42 @@ class Category:
 
     __urls = {
         "find": "/api/ganjoor/cat/{id}",
-        "find_url": "/api/ganjoor/cat"
+        "find_by_url": "/api/ganjoor/cat"
     }
 
     def __init__(self, category_args):
         for key in category_args.keys():
             snake_key = underscore(key)
             setattr(self, "_"+snake_key, category_args[key])
+
+    @classmethod
+    def find(cls, id, poems=False) -> Category:
+        path = ganjoor_base_url+cls.__urls['find'].format(id=id)
+        response = requests.get(path, params={'poems': poems})
+        if response.status_code == 200:
+            body_poet = response.json()['poet']
+            body_cat = response.json()['cat']
+            category = Category(body_cat)
+            category._poet = body_poet
+            return category
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    @classmethod
+    def find_by_url(cls, url, poems=False) -> Category:
+        path = ganjoor_base_url+cls.__urls['find_by_url']
+        response = requests.get(path, params={'poems': poems, 'url': url})
+        if response.status_code == 200:
+            body_poet = response.json()['poet']
+            body_cat = response.json()['cat']
+            category = Category(body_cat)
+            category._poet = body_poet
+            return category
+        else:
+            raise GanjoorException(
+                f"""Invalid Response Code: {response.status_code}
+                Message: {response.reason}""")
 
     @property
     def children(self) -> List[Category]:
@@ -81,35 +110,6 @@ class Category:
     def poet(self) -> Poet:
         return Poet(self._poet)
 
-    @classmethod
-    def find(cls, id, poems=False) -> Category:
-        path = ganjoor_base_url+cls.__urls['find'].format(id=id)
-        response = requests.get(path, params={'poems': poems})
-        if response.status_code == 200:
-            body_poet = response.json()['poet']
-            body_cat = response.json()['cat']
-            category = Category(body_cat)
-            category._poet = body_poet
-            return category
-        else:
-            raise GanjoorException(
-                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
-
-    @classmethod
-    def find_by_url(cls, url, poems=False) -> Category:
-        path = ganjoor_base_url+cls.__urls['find']
-        response = requests.get(path, params={'poems': poems, 'url': url})
-        if response.status_code == 200:
-            body_poet = response.json()['poet']
-            body_cat = response.json()['cat']
-            category = Category(body_cat)
-            category._poet = body_poet
-            return category
-        else:
-            raise GanjoorException(
-                f"""Invalid Response Code: {response.status_code}
-                Message: {response.reason}""")
-
 
 @dataclass
 class Poet:
@@ -127,7 +127,7 @@ class Poet:
     __urls = {
         "all": "/api/ganjoor/poets",
         "find": "/api/ganjoor/poet/{id}",
-        "find_url": "/api/ganjoor/poet"
+        "find_by_url": "/api/ganjoor/poet"
     }
 
     def __init__(self, poet_args) -> None:
@@ -166,7 +166,7 @@ class Poet:
 
     @classmethod
     def find_by_url(cls, url):
-        path = ganjoor_base_url+cls.__urls['find_url']
+        path = ganjoor_base_url+cls.__urls['find_by_url']
         response = requests.get(path, params={'url': url})
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -242,8 +242,11 @@ class Poem:
 
     __urls = {
         "find": "/api/ganjoor/poem/{id}",
-        "find_url": "/api/ganjoor/poem",
-
+        "find_by_url": "/api/ganjoor/poem",
+        "recitations": "/recitations",
+        "images": "/images",
+        "songs": "/songs",
+        "comments": "/comments",
     }
 
     def __init__(self, poem_args) -> None:
@@ -255,11 +258,14 @@ class Poem:
             self._category = Category(self._category['cat'])
 
     @classmethod
-    def find(cls, id, category_info=True, category_poems=True, rhymes=True,
-             recitations=True, images=True, songs=True, comments=True,
-             verse_details=True, navigation=True) -> Poem:
+    def find(cls, id, complete=False, category_info=False, category_poems=False, rhymes=False,
+             recitations=False, images=False, songs=False, comments=False,
+             verse_details=False, navigation=False) -> Poem:
         params = dict.copy(locals())
         params.pop('id')
+        if complete:
+            for key in params.keys():
+                params[key] = True
         path = ganjoor_base_url+cls.__urls['find'].format(id=id)
         response = requests.get(path, params=params)
         if response.status_code == 200:
@@ -270,12 +276,12 @@ class Poem:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     @classmethod
-    def find_by_url(cls, url, category_info=True, category_poems=True,
-                    rhymes=True, recitations=True, images=True, songs=True,
-                    comments=True, verse_details=True,
-                    navigation=True) -> Poem:
+    def find_by_url(cls, url, category_info=False, category_poems=False,
+                    rhymes=False, recitations=False, images=False, songs=False,
+                    comments=False, verse_details=False,
+                    navigation=False) -> Poem:
         params = dict.copy(locals())
-        path = ganjoor_base_url+cls.__urls['find_url']
+        path = ganjoor_base_url+cls.__urls['find_by_url']
         response = requests.get(path, params=params)
         if response.status_code == 200:
             body = response.json()
@@ -288,6 +294,64 @@ class Poem:
         #     response = requests.get(
         #         "https://ganjgah.ir/api/ganjoor/bookmark",
         #         headers={'Authorization': 'bearer '+auth_token})
+
+    def request_recitations(self) -> List[Recitation]:
+        path = ganjoor_base_url + \
+            self.__urls['find'].format(id=self.id)+self.__urls['recitations']
+        response = requests.get(path)
+        if response.status_code == 200:
+            body = response.json()
+            return [Recitation(recitation) for recitation in body]
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    def request_images(self) -> List[PoemImage]:
+        path = ganjoor_base_url + \
+            self.__urls['find'].format(id=self.id)+self.__urls['images']
+        response = requests.get(path)
+        if response.status_code == 200:
+            body = response.json()
+            return [PoemImage(image) for image in body]
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    def request_songs(self, track_type=-1, approved=True) -> List[Song]:
+        path = ganjoor_base_url + \
+            self.__urls['find'].format(id=self.id)+self.__urls['songs']
+        response = requests.get(
+            path, params={'track_type': track_type, 'approved': approved})
+        if response.status_code == 200:
+            body = response.json()
+            return [Song(song) for song in body]
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    def request_comments(self) -> List[Comment]:
+        path = ganjoor_base_url + \
+            self.__urls['find'].format(id=self.id)+self.__urls['comments']
+        response = requests.get(path)
+        if response.status_code == 200:
+            body = response.json()
+            return [Comment(comment) for comment in body]
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
+
+    def get_couplet(self, index: int) -> Couplet:
+        return Couplet([verse for verse in self.verses
+                        if verse.couplet_index == index])
+
+    def get_all_couplets(self) -> List[Couplet]:
+        last_couplet = max([verse.couplet_index for verse in self.verses])
+        return [self.get_couplet(index)
+                for index in range(0, last_couplet+1)]
+
+    def __str__(self):
+        all_couplets = self.get_all_couplets()
+        return '\n\n'.join([str(couplet) for couplet in all_couplets])
 
     @property
     def ganjoor_metre(self) -> Metre:
@@ -325,11 +389,11 @@ class Poem:
 
     @property
     def previous_poem(self) -> IncompletePoem:
-        return IncompletePoem(self._previous)
+        return IncompletePoem(self._previous) if self._previous else None
 
     @property
     def next_poem(self) -> IncompletePoem:
-        return IncompletePoem(self._next)
+        return IncompletePoem(self._next) if self._next else None
 
     @property
     def normal_image_urls(self) -> List[str]:
@@ -342,18 +406,6 @@ class Poem:
     @property
     def verses(self) -> List[Verse]:
         return [Verse(verse) for verse in self._verses]
-
-    def get_couplet(self, index: int) -> Couplet:
-        return Couplet([verse for verse in self.verses if verse.couplet_index == index])
-
-    def get_all_couplets(self) -> List[Couplet]:
-        last_couplet = max([verse.couplet_index for verse in self.verses])
-        return [self.get_couplet(index)
-                for index in range(0, last_couplet+1)]
-
-    def __str__(self):
-        all_couplets = self.get_all_couplets()
-        return '\n\n'.join([str(couplet) for couplet in all_couplets])
 
     @property
     def id(self) -> int:
