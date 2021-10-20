@@ -5,3 +5,4 @@
 /.vscode/
 /apis/
 **/__pycache__/
+.coverage
