@@ -247,6 +247,7 @@ class Poem:
         "images": "/images",
         "songs": "/songs",
         "comments": "/comments",
+        "hafez_faal": "/api/ganjoor/hafez/faal"
     }
 
     def __init__(self, poem_args) -> None:
@@ -294,6 +295,17 @@ class Poem:
         #     response = requests.get(
         #         "https://ganjgah.ir/api/ganjoor/bookmark",
         #         headers={'Authorization': 'bearer '+auth_token})
+
+    @classmethod
+    def hafez_faal(cls):
+        path = ganjoor_base_url+cls.__urls['hafez_faal']
+        response = requests.get(path)
+        if response.status_code == 200:
+            body = response.json()
+            return Poem(body)
+        else:
+            raise GanjoorException(
+                f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     def request_recitations(self) -> List[Recitation]:
         path = ganjoor_base_url + \
