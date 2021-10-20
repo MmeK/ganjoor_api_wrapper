@@ -5,13 +5,14 @@ name = "pypi"
 
 [packages]
 requests = "*"
-vcrpy = "*"
-pytest = "*"
 inflection = "*"
 
 [dev-packages]
 flake8 = "*"
 autopep8 = "*"
+vcrpy = "*"
+coverage = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"
