@@ -5,7 +5,7 @@ from typing import List
 from inflection import underscore
 from dataclasses import dataclass
 import requests
-from config.settings import ganjoor_base_url
+from . import GANJGAH_BASE_URL
 from ganjoor.exceptions import GanjoorException
 from .poem_utils import (PoemImage, Comment, IncompletePoem,
                          Song, Recitation, Verse, Metre, Couplet)
@@ -36,7 +36,7 @@ class Category:
 
     @classmethod
     def find(cls, id, poems=True) -> Category:
-        path = ganjoor_base_url+cls.__urls['find'].format(id=id)
+        path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
         response = requests.get(path, params={'poems': poems})
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -50,7 +50,7 @@ class Category:
 
     @classmethod
     def find_by_url(cls, url, poems=True) -> Category:
-        path = ganjoor_base_url+cls.__urls['find_by_url']
+        path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
         response = requests.get(path, params={'poems': poems, 'url': url})
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -137,7 +137,7 @@ class Poet:
 
     @classmethod
     def all(cls) -> list():
-        path = ganjoor_base_url+cls.__urls['all']
+        path = GANJGAH_BASE_URL+cls.__urls['all']
         response = requests.get(path)
         if response.status_code == 200:
             body = response.json()
@@ -152,7 +152,7 @@ class Poet:
 
     @classmethod
     def find(cls, id: int):
-        path = ganjoor_base_url+cls.__urls['find'].format(id=id)
+        path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
         response = requests.get(path)
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -166,7 +166,7 @@ class Poet:
 
     @classmethod
     def find_by_url(cls, url):
-        path = ganjoor_base_url+cls.__urls['find_by_url']
+        path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
         response = requests.get(path, params={'url': url})
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -180,7 +180,7 @@ class Poet:
 
     @property
     def avatar_url(self, format="png") -> str:
-        return ganjoor_base_url+self.image_url
+        return GANJGAH_BASE_URL+self.image_url
 
     @property
     def id(self) -> int:
@@ -270,7 +270,7 @@ class Poem:
         if complete:
             for key in params.keys():
                 params[key] = True
-        path = ganjoor_base_url+cls.__urls['find'].format(id=id)
+        path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
         response = requests.get(path, params=params)
         if response.status_code == 200:
             body = response.json()
@@ -285,7 +285,7 @@ class Poem:
                     comments=False, verse_details=False,
                     navigation=False) -> Poem:
         params = dict.copy(locals())
-        path = ganjoor_base_url+cls.__urls['find_by_url']
+        path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
         response = requests.get(path, params=params)
         if response.status_code == 200:
             body = response.json()
@@ -301,7 +301,7 @@ class Poem:
 
     @classmethod
     def hafez_faal(cls) -> Poem:
-        path = ganjoor_base_url+cls.__urls['hafez_faal']
+        path = GANJGAH_BASE_URL+cls.__urls['hafez_faal']
         response = requests.get(path)
         if response.status_code == 200:
             body = response.json()
@@ -312,7 +312,7 @@ class Poem:
 
     @classmethod
     def random(cls, poet_id=None) -> Poem:
-        path = ganjoor_base_url+cls.__urls['random']
+        path = GANJGAH_BASE_URL+cls.__urls['random']
         response = requests.get(path, params={'poetId': poet_id})
         if response.status_code == 200:
             body = response.json()
@@ -323,10 +323,10 @@ class Poem:
 
     @classmethod
     def similar(cls, page_number=1, page_size=5, metre: str = None,
-                rhyme: str = None, poet_id=0) -> Poem:
+                rhyme: str = None, poet_id=0) -> List[Poem]:
         """Gets a list of similar Poems. if no metre is supplied
         the list will return texts not poems. Use poet_id=0 for all poets"""
-        path = ganjoor_base_url+cls.__urls['similar']
+        path = GANJGAH_BASE_URL+cls.__urls['similar']
         response = requests.get(path, params={
                                 'pageNumber': page_number, 'rhyme': rhyme,
                                 'metre': metre, 'pageSize': page_size,
@@ -340,12 +340,12 @@ class Poem:
 
     @classmethod
     def search(cls, page_number=1, page_size=5, term: str = "شیراز",
-               cat_id: int = 0, poet_id=0) -> Poem:
+               cat_id: int = 0, poet_id=0) -> List[Poem]:
         """Gets a list of Poems with the search term.
         if term is empty or an empty string or whitespace
         there will be an internal server error (500).
         Use poet_id=0 for all poets and cat_id=0 for all categories"""
-        path = ganjoor_base_url+cls.__urls['search']
+        path = GANJGAH_BASE_URL+cls.__urls['search']
         response = requests.get(path, params={
                                 'pageNumber': page_number, 'term': term,
                                 'cat_id': cat_id, 'pageSize': page_size,
@@ -358,7 +358,7 @@ class Poem:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     def request_recitations(self) -> List[Recitation]:
-        path = ganjoor_base_url + \
+        path = GANJGAH_BASE_URL + \
             self.__urls['find'].format(id=self.id)+self.__urls['recitations']
         response = requests.get(path)
         if response.status_code == 200:
@@ -369,7 +369,7 @@ class Poem:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     def request_images(self) -> List[PoemImage]:
-        path = ganjoor_base_url + \
+        path = GANJGAH_BASE_URL + \
             self.__urls['find'].format(id=self.id)+self.__urls['images']
         response = requests.get(path)
         if response.status_code == 200:
@@ -380,7 +380,7 @@ class Poem:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     def request_songs(self, track_type=-1, approved=True) -> List[Song]:
-        path = ganjoor_base_url + \
+        path = GANJGAH_BASE_URL + \
             self.__urls['find'].format(id=self.id)+self.__urls['songs']
         response = requests.get(
             path, params={'track_type': track_type, 'approved': approved})
@@ -392,7 +392,7 @@ class Poem:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     def request_comments(self) -> List[Comment]:
-        path = ganjoor_base_url + \
+        path = GANJGAH_BASE_URL + \
             self.__urls['find'].format(id=self.id)+self.__urls['comments']
         response = requests.get(path)
         if response.status_code == 200:
