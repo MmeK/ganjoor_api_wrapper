@@ -6,3 +6,4 @@
 /apis/
 **/__pycache__/
 .coverage
+MANIFEST
