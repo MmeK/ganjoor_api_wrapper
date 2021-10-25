@@ -35,7 +35,7 @@ class Category:
             setattr(self, "_"+snake_key, category_args[key])
 
     @classmethod
-    def find(cls, id, poems=False) -> Category:
+    def find(cls, id, poems=True) -> Category:
         path = ganjoor_base_url+cls.__urls['find'].format(id=id)
         response = requests.get(path, params={'poems': poems})
         if response.status_code == 200:
@@ -49,7 +49,7 @@ class Category:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     @classmethod
-    def find_by_url(cls, url, poems=False) -> Category:
+    def find_by_url(cls, url, poems=True) -> Category:
         path = ganjoor_base_url+cls.__urls['find_by_url']
         response = requests.get(path, params={'poems': poems, 'url': url})
         if response.status_code == 200:
