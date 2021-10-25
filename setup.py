@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name='ganjoor-api-wrapper',
     packages=['ganjoor'],
-    version='0.1',
+    version='0.1.1',
     license='MIT',
     description='Ganjoor API wrapper in python',
     author='Mohammad Kazemi',
