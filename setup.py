@@ -10,7 +10,7 @@ setup(
     author='Mohammad Kazemi',
     author_email='kazemi.me.222@gmail.com',
     url='https://github.com/MmeK/ganjoor_api_wrapper',
-    download_url='https://github.com/MmeK/ganjoor_api_wrapper/archive/refs/tags/v0.1.0-alpha.tar.gz',
+    download_url='https://github.com/MmeK/ganjoor_api_wrapper/archive/refs/tags/v0.1.1-alpha.tar.gz',
     keywords=['Ganjoor', 'API', 'API-wrapper', 'Poetry', 'Persian', 'Farsi'],
     install_requires=[            # I get to this in a second
         'inflection',
