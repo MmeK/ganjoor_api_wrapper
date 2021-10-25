@@ -5,7 +5,7 @@ from typing import List
 from inflection import underscore
 from dataclasses import dataclass
 import requests
-from . import GANJGAH_BASE_URL
+from .config import GANJGAH_BASE_URL
 from ganjoor.exceptions import GanjoorException
 from .poem_utils import (PoemImage, Comment, IncompletePoem,
                          Song, Recitation, Verse, Metre, Couplet)

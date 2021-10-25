@@ -5,7 +5,7 @@ import requests
 from ganjoor.exceptions import GanjoorException
 
 from .models import Category, Poet, Poem
-from . import GANJGAH_BASE_URL
+from .config import GANJGAH_BASE_URL
 # TODO: Fix Logging
 # import logging
 # from os.path import join as path_join
