@@ -3,7 +3,6 @@
 from pytest import fixture
 from ganjoor import Poem
 import vcr
-from ganjoor import poem_utils
 
 from ganjoor.poem_utils import Comment, IncompletePoem, Metre, PoemImage, Recitation, Song, Verse
 
