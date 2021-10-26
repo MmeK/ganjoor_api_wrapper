@@ -35,9 +35,9 @@ class Category:
             setattr(self, "_"+snake_key, category_args[key])
 
     @classmethod
-    def find(cls, id, poems=True) -> Category:
+    def find(cls, id, with_poems=True) -> Category:
         path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
-        response = requests.get(path, params={'poems': poems})
+        response = requests.get(path, params={'poems': with_poems})
         if response.status_code == 200:
             body_poet = response.json()['poet']
             body_cat = response.json()['cat']
@@ -49,9 +49,9 @@ class Category:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     @classmethod
-    def find_by_url(cls, url, poems=True) -> Category:
+    def find_by_url(cls, url, with_poems=True) -> Category:
         path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
-        response = requests.get(path, params={'poems': poems, 'url': url})
+        response = requests.get(path, params={'poems': with_poems, 'url': url})
         if response.status_code == 200:
             body_poet = response.json()['poet']
             body_cat = response.json()['cat']
@@ -136,7 +136,7 @@ class Poet:
             setattr(self, "_"+snake_key, poet_args[key])
 
     @classmethod
-    def all(cls) -> list():
+    def all(cls) -> List[Poet]:
         path = GANJGAH_BASE_URL+cls.__urls['all']
         response = requests.get(path)
         if response.status_code == 200:
