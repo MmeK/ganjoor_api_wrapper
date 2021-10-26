@@ -6,12 +6,14 @@ name = "pypi"
 [packages]
 requests = "*"
 inflection = "*"
+python-dotenv = "*"
 
 [dev-packages]
 flake8 = "*"
 autopep8 = "*"
 vcrpy = "*"
 coverage = "*"
+python-dotenv = "*"
 pytest = "*"
 twine = "*"
 
