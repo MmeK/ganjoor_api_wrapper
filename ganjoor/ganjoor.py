@@ -50,6 +50,9 @@ class Ganjoor:
         else:
             pass  # TODO: get Bookmarks
 
+    def get_all_poets(self) -> List[Poet]:
+        return Poet.all()
+
     def find_poet_by_id(self, id: int) -> Poet:
         return Poet.find(id)
 
@@ -57,10 +60,10 @@ class Ganjoor:
         return Poet.find_by_url(url)
 
     def find_category_by_id(self, id: int, with_poems=True) -> Category:
-        return Category.find(id, with_poems)
+        return Category.find(id, with_poems=with_poems)
 
     def find_category_by_url(self, url: str, with_poems=True) -> Category:
-        return Category.find_by_url(url, with_poems)
+        return Category.find_by_url(url, with_poems=with_poems)
 
     def find_poem_by_id(self, id: int, complete=False, category_info=False,
                         category_poems=False, rhymes=False,
