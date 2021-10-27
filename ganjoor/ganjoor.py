@@ -89,7 +89,7 @@ class Ganjoor:
                                 comments=comments, verse_details=verse_details,
                                 navigation=navigation)
 
-    def find_random_poem(self, poet_id=None) -> Poem:
+    def random_poem(self, poet_id=None) -> Poem:
         return Poem.random(poet_id=poet_id)
 
     def find_similar_poems(self, page_size: int = 5, page_number: int = 1,
@@ -98,3 +98,11 @@ class Ganjoor:
         return Poem.similar(page_number=page_number,
                             page_size=page_size, metre=metre, rhyme=rhyme,
                             poet_id=poet_id)
+
+    def search_poems(self, term: str, page_size: int = 5, page_number: int = 1,
+                     cat_id: id = 0, poet_id=0) -> List[Poem]:
+        return Poem.search(page_number=page_number, term=term,
+                           page_size=page_size, cat_id=cat_id, poet_id=poet_id)
+
+    def hafez_faal(self) -> Poem:
+        return Poem.hafez_faal()
