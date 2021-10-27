@@ -4,13 +4,13 @@ from distutils.core import setup
 setup(
     name='ganjoor-api-wrapper',
     packages=['ganjoor'],
-    version='0.1.2',
+    version='0.1.3',
     license='MIT',
     description='Ganjoor API wrapper in python',
     author='Mohammad Kazemi',
     author_email='kazemi.me.222@gmail.com',
     url='https://github.com/MmeK/ganjoor_api_wrapper',
-    download_url='https://github.com/MmeK/ganjoor_api_wrapper/archive/refs/tags/v0.1.2-alpha.tar.gz',
+    download_url='https://github.com/MmeK/ganjoor_api_wrapper/archive/refs/tags/v0.1.3-alpha.tar.gz',
     keywords=['Ganjoor', 'API', 'API-wrapper', 'Poetry', 'Persian', 'Farsi'],
     install_requires=[            # I get to this in a second
         'inflection',
