@@ -238,7 +238,7 @@ class Poem:
     _images: List[PoemImage]
     _songs: List[Song]
     _comments: List[Comment]
-    _poet: Poet
+    _poet: Poet = None
 
     __urls = {
         "find": "/api/ganjoor/poem/{id}",
@@ -265,11 +265,28 @@ class Poem:
     def find(cls, id, complete=False, category_info=False, category_poems=False, rhymes=False,
              recitations=False, images=False, songs=False, comments=False,
              verse_details=False, navigation=False) -> Poem:
+        """
+        Requests Ganjoor API for a poem with this id.
+
+        Parameters
+        ----------
+        id: int
+            Poem id
+        complete: bool
+            Pass this as True if you want all info except category poems
+            If set to true, all other keyword parameters will be ignored
+        category_info: bool
+            If category info should be included in the response
+
+        Returns
+        -------
+        Poem
+            The poem with the requested id
+        """
         params = dict.copy(locals())
         params.pop('id')
         if complete:
-            for key in params.keys():
-                params[key] = True
+            params = {}
         path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
         response = requests.get(path, params=params)
         if response.status_code == 200:
@@ -280,11 +297,13 @@ class Poem:
                 f"Invalid Response Code: {response.status_code} with Message: {response.reason}")
 
     @classmethod
-    def find_by_url(cls, url, category_info=False, category_poems=False,
+    def find_by_url(cls, url, complete=False, category_info=False, category_poems=False,
                     rhymes=False, recitations=False, images=False, songs=False,
                     comments=False, verse_details=False,
                     navigation=False) -> Poem:
         params = dict.copy(locals())
+        if complete:
+            params = {'url': url}
         path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
         response = requests.get(path, params=params)
         if response.status_code == 200:
@@ -412,6 +431,9 @@ class Poem:
             return [self.get_couplet(index)
                     for index in range(0, last_couplet+1)]
         return []
+
+    def get_poet_name_from_url(self) -> str:
+        return self.full_url.split('/')[1]
 
     def __str__(self):
         if self.plain_text:
