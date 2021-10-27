@@ -12,7 +12,7 @@ setup(
     url='https://github.com/MmeK/ganjoor_api_wrapper',
     download_url='https://github.com/MmeK/ganjoor_api_wrapper/archive/refs/tags/v0.1.3-alpha.tar.gz',
     keywords=['Ganjoor', 'API', 'API-wrapper', 'Poetry', 'Persian', 'Farsi'],
-    install_requires=[            # I get to this in a second
+    install_requires=[
         'inflection',
         'requests',
     ],
