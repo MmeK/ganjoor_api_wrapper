@@ -3,11 +3,14 @@ Ganjoor-Api-Wrapper
 
 Provides an easy way to use the Amazing `Ganjoor Web Service <https://github.com/ganjoor/GanjoorService>`_
 
-Example for getting a faal from hafez:
+Example for getting a faal from hafez::
 
     from ganjoor import Ganjoor
+
     go = Ganjoor()
+
     faal = ganjoor.hafez_faal()
+    
     print(faal)
 
 
