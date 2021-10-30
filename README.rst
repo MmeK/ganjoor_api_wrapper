@@ -6,26 +6,26 @@ Provides an easy way to use the Amazing `Ganjoor Web Service <https://github.com
 Example for getting a faal from hafez::
 
     from ganjoor import Ganjoor
-
     go = Ganjoor()
-
     faal = ganjoor.hafez_faal()
-    
     print(faal)
 
 
 Installation
 ------------
 
-Install $project by running:
+Install using pip::
 
-    pip install ganjoor-api-wrapper
+    $ pip install ganjoor-api-wrapper
+
+Or using pipenv::
+    $ pipenv install ganjoor-api-wrapper
 
 Contribute
 ----------
 
-- Issue Tracker: https://github.com/MmeK/ganjoor_api_wrapper/issues
-- Source Code: https://github.com/MmeK/ganjoor_api_wrapper
+- Issue Tracker: github.com/MmeK/ganjoor_api_wrapper/issues
+- Source Code: github.com/MmeK/ganjoor_api_wrapper
 
 License
 -------
