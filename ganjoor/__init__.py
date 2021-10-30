@@ -2,3 +2,4 @@
 # SPDX-License-Identifier: MIT
 from .models import (Poet, Poem, Category)
 from .ganjoor import Ganjoor
+from exceptions import GanjoorException
