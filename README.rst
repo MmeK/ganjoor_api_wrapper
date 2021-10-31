@@ -1,3 +1,6 @@
+.. image:: https://codecov.io/gh/MmeK/ganjoor_api_wrapper/branch/main/graph/badge.svg?token=44MQD6I9K4
+    :target: https://codecov.io/gh/MmeK/ganjoor_api_wrapper
+
 Ganjoor-Api-Wrapper
 ===================
 
