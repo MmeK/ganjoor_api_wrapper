@@ -44,6 +44,7 @@ Install using pip::
     $ pip install ganjoor-api-wrapper
 
 Or using pipenv::
+
     $ pipenv install ganjoor-api-wrapper
 
 Contribute
