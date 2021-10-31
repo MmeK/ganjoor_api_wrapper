@@ -1,7 +1,8 @@
 # Copyright 2021 Mohammad Kazemi <kazemi.me.222@gmail.com>.
 # SPDX-License-Identifier: MIT
 from pytest import fixture, mark
-from ganjoor import Ganjoor
+import pytest
+from ganjoor import Ganjoor, GanjoorException
 from dotenv import load_dotenv
 from os import environ
 import vcr
@@ -42,8 +43,13 @@ class TestGanjoor:
         load_dotenv()
         username = environ.get('USERNAME')
         password = environ.get('PASSWORD')
-        ganjoor.log_in(username=username, password=password)
-        assert ganjoor.auth_token
+        if username == '' or password == '':
+            with pytest.raises(GanjoorException):
+                ganjoor.log_in(username=username, password=password)
+
+        else:
+            ganjoor.log_in(username=username, password=password)
+            assert ganjoor.auth_token
 
 # Poet Tests
     @vcr.use_cassette('tests/vcr_cassettes/ganjoor_find_poet_id.yml')
