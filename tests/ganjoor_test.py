@@ -41,17 +41,20 @@ class TestGanjoor:
     @vcr.use_cassette('tests/vcr_cassettes/ganjoor_login.yml')
     def test_log_in(self, ganjoor):
         load_dotenv()
-        username = environ.get('USERNAME')
-        password = environ.get('PASSWORD')
-        if username == '' or password == '':
+        username = environ.get('GANJOOR_USERNAME')
+        password = environ.get('GANJOOR_PASSWORD')
+        print(username)
+        print(password)
+        if username and password:
+            ganjoor.log_in(username=username, password=password)
+            assert ganjoor.auth_token
+        else:
             with pytest.raises(GanjoorException):
                 ganjoor.log_in(username=username, password=password)
 
-        else:
-            ganjoor.log_in(username=username, password=password)
-            assert ganjoor.auth_token
 
 # Poet Tests
+
     @vcr.use_cassette('tests/vcr_cassettes/ganjoor_find_poet_id.yml')
     def test_find_poet_by_id(self, ganjoor):
         poet = ganjoor.find_poet_by_id(2)
