@@ -36,6 +36,8 @@ jobs:
 
       - name: Run tests
         run: pipenv run py.test
-
+      - name: Generate Report
+        run: |
+          coverage run -m py.test
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
