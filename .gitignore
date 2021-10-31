@@ -6,6 +6,7 @@
 /apis/
 **/__pycache__/
 .coverage
+coverage.xml
 MANIFEST
 /dist/
 .env

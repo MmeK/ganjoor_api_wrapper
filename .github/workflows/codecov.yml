@@ -39,5 +39,6 @@ jobs:
       - name: Generate Report
         run: |
           pipenv run coverage run -m py.test
+          pipenv run coverage xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
