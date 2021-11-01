@@ -180,7 +180,7 @@ class Poet:
 
     @property
     def avatar_url(self, format="png") -> str:
-        return GANJGAH_BASE_URL+self.image_url
+        return GANJGAH_BASE_URL+self._image_url
 
     @property
     def id(self) -> int:
