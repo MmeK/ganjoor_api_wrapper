@@ -30,9 +30,12 @@ class Category:
     }
 
     def __init__(self, category_args):
-        for key in category_args.keys():
+        self.from_dict(category_args)
+
+    def from_dict(self, args):
+        for key in args.keys():
             snake_key = underscore(key)
-            setattr(self, "_"+snake_key, category_args[key])
+            setattr(self, "_"+snake_key, args[key])
 
     @classmethod
     def find(cls, id, with_poems=True) -> Category:
@@ -131,9 +134,12 @@ class Poet:
     }
 
     def __init__(self, poet_args) -> None:
-        for key in poet_args.keys():
+        self.from_dict(poet_args)
+
+    def from_dict(self, args):
+        for key in args.keys():
             snake_key = underscore(key)
-            setattr(self, "_"+snake_key, poet_args[key])
+            setattr(self, "_"+snake_key, args[key])
 
     @classmethod
     def all(cls) -> List[Poet]:
@@ -254,9 +260,12 @@ class Poem:
     }
 
     def __init__(self, poem_args) -> None:
-        for key in poem_args.keys():
+        self.from_dict(poem_args)
+
+    def from_dict(self, args):
+        for key in args.keys():
             snake_key = underscore(key)
-            setattr(self, "_"+snake_key, poem_args[key])
+            setattr(self, "_"+snake_key, args[key])
         if self._category:
             self._poet = Poet(self._category['poet'])
             self._category = Category(self._category['cat'])
