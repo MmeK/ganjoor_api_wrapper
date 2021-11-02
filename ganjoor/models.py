@@ -24,7 +24,7 @@ class Category:
     _children: List[Category]
     _poems: List[IncompletePoem]
 
-    __urls = {
+    _urls = {
         "find": "/api/ganjoor/cat/{id}",
         "find_by_url": "/api/ganjoor/cat"
     }
@@ -39,7 +39,7 @@ class Category:
 
     @classmethod
     def find(cls, id, with_poems=True) -> Category:
-        path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
+        path = GANJGAH_BASE_URL+cls._urls['find'].format(id=id)
         response = requests.get(path, params={'poems': with_poems})
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -53,7 +53,7 @@ class Category:
 
     @classmethod
     def find_by_url(cls, url, with_poems=True) -> Category:
-        path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
+        path = GANJGAH_BASE_URL+cls._urls['find_by_url']
         response = requests.get(path, params={'poems': with_poems, 'url': url})
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -127,7 +127,7 @@ class Poet:
     _image_url: str
     _cat: Category = None
 
-    __urls = {
+    _urls = {
         "all": "/api/ganjoor/poets",
         "find": "/api/ganjoor/poet/{id}",
         "find_by_url": "/api/ganjoor/poet"
@@ -143,7 +143,7 @@ class Poet:
 
     @classmethod
     def all(cls) -> List[Poet]:
-        path = GANJGAH_BASE_URL+cls.__urls['all']
+        path = GANJGAH_BASE_URL+cls._urls['all']
         response = requests.get(path)
         if response.status_code == 200:
             body = response.json()
@@ -158,7 +158,7 @@ class Poet:
 
     @classmethod
     def find(cls, id: int):
-        path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
+        path = GANJGAH_BASE_URL+cls._urls['find'].format(id=id)
         response = requests.get(path)
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -172,7 +172,7 @@ class Poet:
 
     @classmethod
     def find_by_url(cls, url):
-        path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
+        path = GANJGAH_BASE_URL+cls._urls['find_by_url']
         response = requests.get(path, params={'url': url})
         if response.status_code == 200:
             body_poet = response.json()['poet']
@@ -246,7 +246,7 @@ class Poem:
     _comments: List[Comment]
     _poet: Poet = None
 
-    __urls = {
+    _urls = {
         "find": "/api/ganjoor/poem/{id}",
         "find_by_url": "/api/ganjoor/poem",
         "recitations": "/recitations",
@@ -296,7 +296,7 @@ class Poem:
         params.pop('id')
         if complete:
             params = {}
-        path = GANJGAH_BASE_URL+cls.__urls['find'].format(id=id)
+        path = GANJGAH_BASE_URL+cls._urls['find'].format(id=id)
         response = requests.get(path, params=params)
         if response.status_code == 200:
             body = response.json()
@@ -313,7 +313,7 @@ class Poem:
         params = dict.copy(locals())
         if complete:
             params = {'url': url}
-        path = GANJGAH_BASE_URL+cls.__urls['find_by_url']
+        path = GANJGAH_BASE_URL+cls._urls['find_by_url']
         response = requests.get(path, params=params)
         if response.status_code == 200:
             body = response.json()
@@ -329,7 +329,7 @@ class Poem:
 
     @classmethod
     def hafez_faal(cls) -> Poem:
-        path = GANJGAH_BASE_URL+cls.__urls['hafez_faal']
+        path = GANJGAH_BASE_URL+cls._urls['hafez_faal']
         response = requests.get(path)
         if response.status_code == 200:
             body = response.json()
@@ -340,7 +340,7 @@ class Poem:
 
     @classmethod
     def random(cls, poet_id=None) -> Poem:
-        path = GANJGAH_BASE_URL+cls.__urls['random']
+        path = GANJGAH_BASE_URL+cls._urls['random']
         response = requests.get(path, params={'poetId': poet_id})
         if response.status_code == 200:
             body = response.json()
@@ -354,7 +354,7 @@ class Poem:
                 rhyme: str = None, poet_id=0) -> List[Poem]:
         """Gets a list of similar Poems. if no metre is supplied
         the list will return texts not poems. Use poet_id=0 for all poets"""
-        path = GANJGAH_BASE_URL+cls.__urls['similar']
+        path = GANJGAH_BASE_URL+cls._urls['similar']
         response = requests.get(path, params={
                                 'pageNumber': page_number, 'rhyme': rhyme,
                                 'metre': metre, 'pageSize': page_size,
@@ -373,7 +373,7 @@ class Poem:
         if term is empty or an empty string or whitespace
         there will be an internal server error (500).
         Use poet_id=0 for all poets and cat_id=0 for all categories"""
-        path = GANJGAH_BASE_URL+cls.__urls['search']
+        path = GANJGAH_BASE_URL+cls._urls['search']
         response = requests.get(path, params={
                                 'pageNumber': page_number, 'term': term,
                                 'cat_id': cat_id, 'pageSize': page_size,
@@ -387,7 +387,7 @@ class Poem:
 
     def request_recitations(self) -> List[Recitation]:
         path = GANJGAH_BASE_URL + \
-            self.__urls['find'].format(id=self.id)+self.__urls['recitations']
+            self._urls['find'].format(id=self.id)+self._urls['recitations']
         response = requests.get(path)
         if response.status_code == 200:
             body = response.json()
@@ -398,7 +398,7 @@ class Poem:
 
     def request_images(self) -> List[PoemImage]:
         path = GANJGAH_BASE_URL + \
-            self.__urls['find'].format(id=self.id)+self.__urls['images']
+            self._urls['find'].format(id=self.id)+self._urls['images']
         response = requests.get(path)
         if response.status_code == 200:
             body = response.json()
@@ -409,7 +409,7 @@ class Poem:
 
     def request_songs(self, track_type=-1, approved=True) -> List[Song]:
         path = GANJGAH_BASE_URL + \
-            self.__urls['find'].format(id=self.id)+self.__urls['songs']
+            self._urls['find'].format(id=self.id)+self._urls['songs']
         response = requests.get(
             path, params={'track_type': track_type, 'approved': approved})
         if response.status_code == 200:
@@ -421,7 +421,7 @@ class Poem:
 
     def request_comments(self) -> List[Comment]:
         path = GANJGAH_BASE_URL + \
-            self.__urls['find'].format(id=self.id)+self.__urls['comments']
+            self._urls['find'].format(id=self.id)+self._urls['comments']
         response = requests.get(path)
         if response.status_code == 200:
             body = response.json()
