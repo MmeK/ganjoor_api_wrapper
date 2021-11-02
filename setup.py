@@ -15,6 +15,7 @@ setup(
     install_requires=[
         'inflection',
         'requests',
+        'requests-cache'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
