@@ -4,30 +4,29 @@ from typing import List
 import requests
 from ganjoor.exceptions import GanjoorException
 
+import requests_cache
+from requests_cache import DO_NOT_CACHE
+
 from .models import Category, Poet, Poem
 from .config import GANJGAH_BASE_URL
-# TODO: Fix Logging
-# import logging
-# from os.path import join as path_join
-
-
-# import http.client as http_client
-# http_client.HTTPConnection.debuglevel = 1
-
-# logging.basicConfig(filename=path_join("logs", "example.log"))
-# logging.getLogger().setLevel(logging.DEBUG)
-# requests_log = logging.getLogger("requests.packages.urllib3")
-# requests_log.setLevel(logging.DEBUG)
-# requests_log.propagate = True
 
 
 class Ganjoor:
     def __init__(self, token=None, language="string", app_name="pythonclient",
-                 base_url=GANJGAH_BASE_URL):
+                 base_url=GANJGAH_BASE_URL, cache_time=-1):
         self.token = token
         self.language = language
         self.base_url = base_url
         self.app_name = app_name
+
+        urls_expire_after = {
+            GANJGAH_BASE_URL+Poem._urls['random']: DO_NOT_CACHE,
+            GANJGAH_BASE_URL+Poem._urls['hafez_faal']: DO_NOT_CACHE,
+            '*': cache_time
+        }
+        requests_cache.install_cache(
+            cache_name='ganjoor_cache', backend='sqlite',
+            urls_expire_after=urls_expire_after)
 
     def log_in(self, username, password):
         self.username = username
