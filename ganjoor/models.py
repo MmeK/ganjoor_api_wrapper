@@ -5,7 +5,7 @@ from typing import List
 from inflection import underscore
 from dataclasses import dataclass
 import requests
-from .config import GANJGAH_BASE_URL
+from .config import GANJGAH_BASE_URL, GANJOOR_BASE_URL
 from ganjoor.exceptions import GanjoorException
 from .poem_utils import (PoemImage, Comment, IncompletePoem,
                          Song, Recitation, Verse, Metre, Couplet)
@@ -110,6 +110,10 @@ class Category:
         return self._full_url
 
     @property
+    def ganjoor_url(self) -> str:
+        return GANJOOR_BASE_URL+self.full_url
+
+    @property
     def poet(self) -> Poet:
         return Poet(self._poet)
 
@@ -203,6 +207,10 @@ class Poet:
     @property
     def full_url(self) -> str:
         return self._full_url
+
+    @property
+    def ganjoor_url(self) -> str:
+        return GANJOOR_BASE_URL+self.full_url
 
     @property
     def root_cat_id(self) -> int:
@@ -532,6 +540,10 @@ class Poem:
     @property
     def full_url(self) -> str:
         return self._full_url
+
+    @property
+    def ganjoor_url(self) -> str:
+        return GANJOOR_BASE_URL+self.full_url
 
     @property
     def plain_text(self) -> str:
